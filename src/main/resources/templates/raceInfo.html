@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"></html>
+<head>
+    <title> Race info </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=Utf-8"/>
+</head>
+<body>
+<h2 th:text="'Race info:'+ ${id}"></h2>
+<h2 th:text="'Date:'+ ${date}"></h2>
+<table>
+    <thead>
+    <tr>
+        <th> Position</th>
+        <th> Name(id)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${list.empty}">
+        <td colspan="4"> No Users Available</td>
+    </tr>
+    <tr th:each="horse : ${list}">
+        <td><span th:text="${horse.id}"> ID </span></td>
+        <td><span th:text="${horse.position}"> Name </span></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"></html>
+<head>
+    <title> Start race </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=Utf-8"/>
+</head>
+<body>
+<h2> Chose your horse</h2>
+    <button th:each="horse ${horses}" >
+        <a th:text="'Hosre '+${horse.id}" th:thref="'localhost:8008/race/start/'+${elem.id}"/>
+    </button>
+</body>
+</html>
