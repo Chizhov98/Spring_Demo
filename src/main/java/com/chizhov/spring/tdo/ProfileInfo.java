@@ -4,12 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class ProfileInfo {
-    private int raceCount;
-    private int winRate;
+    private long raceCount;
+    private long winRate;
 
-    public ProfileInfo(int raceCount, int winRate) {
+    public ProfileInfo(long raceCount, long winRate) {
         this.raceCount = raceCount;
         this.winRate = winRate;
     }
-
 }

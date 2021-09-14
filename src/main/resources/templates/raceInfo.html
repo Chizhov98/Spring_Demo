@@ -12,6 +12,7 @@
     <tr>
         <th> Position</th>
         <th> Name(id)</th>
+        <th>Chosen</th>
     </tr>
     </thead>
     <tbody>
@@ -19,8 +20,9 @@
         <td colspan="4"> No Users Available</td>
     </tr>
     <tr th:each="horse : ${list}">
-        <td><span th:text="${horse.id}"> ID </span></td>
-        <td><span th:text="${horse.position}"> Name </span></td>
+        <td><span th:text="${horse.position}"> Position </span></td>
+        <td><span th:text="${horse.horse.id}"> ID </span></td>
+        <td th:if="${horse.chosen}">+</td>
     </tr>
     </tbody>
 </table>

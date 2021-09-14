@@ -1,10 +1,5 @@
 package com.chizhov.spring.controllers;
 
-import com.chizhov.spring.dao.HorseDao;
-import com.chizhov.spring.dao.RaceDao;
-import com.chizhov.spring.dao.RaceListDao;
-import com.chizhov.spring.entity.Horse;
-import com.chizhov.spring.entity.Race;
 import com.chizhov.spring.entity.RaceList;
 import com.chizhov.spring.service.RaceService;
 import com.chizhov.spring.tdo.ProfileInfo;
@@ -20,11 +15,13 @@ import java.util.List;
 
 @Controller
 public class RaceController {
+    @Autowired
+    RaceService raceService;
 
     @GetMapping("/race/{id}")
     public String getRaceInfo(@PathVariable(name = "id") int id, Model model) {
-        List<RaceList> list = RaceService.getRaceInfo(id);
-        LocalDate date = RaceService.getRaceById(id).getDate();
+        List<RaceList> list = raceService.getRaceInfo(id);
+        LocalDate date = raceService.getRaceById(id).getDate();
         model.addAttribute("date", date);
         model.addAttribute("list", list);
         model.addAttribute("id", id);
@@ -33,22 +30,14 @@ public class RaceController {
 
     @PostMapping("race/start/{id}")
     public void startRace(@PathVariable(name = "id") int id) throws InterruptedException {
-        RaceService.startNewRace(id);
-    }
-
-    @GetMapping("race/start")
-    public String startRacePage(Model model) {
-        List<Horse> horses = RaceService.getAllHorses();
-        model.addAttribute("horses", horses);
-        return "startRace";
+        raceService.firstInit();
+        raceService.startNewRace(id);
     }
 
     @GetMapping("/stats")
     public String getStats(Model model) {
-        ProfileInfo info = RaceService.getProfileInfo();
+        ProfileInfo info = raceService.getProfileInfo();
         model.addAttribute("info", info);
         return "stats";
     }
-
-
 }

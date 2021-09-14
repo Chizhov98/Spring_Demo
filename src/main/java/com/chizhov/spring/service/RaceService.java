@@ -8,6 +8,7 @@ import com.chizhov.spring.entity.Race;
 import com.chizhov.spring.entity.RaceList;
 import com.chizhov.spring.tdo.ProfileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,23 +18,33 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Service
 public class RaceService {
     @Autowired
-    private static HorseDao horseDao;
+    private HorseDao horseDao;
     @Autowired
-    private static RaceDao raceDao;
+    private RaceDao raceDao;
     @Autowired
-    private static RaceListDao raceListDao;
-    private static int horseCount;
-    private static final Random random = new Random();
+    private RaceListDao raceListDao;
+    private int horseCount;
+    private final Random random = new Random();
 
-    private static final int DISTANCE = 1000;
-    private static final int MIN_STEP = 100;
-    private static final int STEP_RANGE = 100;
-    private static final int MIN_SLEEP_TIME = 400;
-    private static final int SLEEP_RANGE = 100;
+    private final int DISTANCE = 1000;
+    private final int MIN_STEP = 100;
+    private final int STEP_RANGE = 100;
+    private final int MIN_SLEEP_TIME = 400;
+    private final int SLEEP_RANGE = 100;
 
-    public static boolean startNewRace(int chosenHorseId) throws InterruptedException {
+    public void firstInit() {
+        List<Horse> horseList = (List<Horse>) horseDao.findAll();
+        if (horseList.size() < 2) {
+            for (int i = 1; i < 10; i++) {
+                horseDao.save(new Horse("" + i));
+            }
+        }
+    }
+
+    public boolean startNewRace(int chosenHorseId) throws InterruptedException {
         Horse chosenHorse = horseDao.findById(chosenHorseId).orElse(new Horse());
         Race race = new Race();
         race.setDate(LocalDate.now());
@@ -46,7 +57,7 @@ public class RaceService {
         return true;
     }
 
-    private static void saveRunData(Race race, List<Horse> results, Horse chosen) {
+    private void saveRunData(Race race, List<Horse> results, Horse chosen) {
         int horsePos = 0;
         RaceList list;
         for (Horse horse : results) {
@@ -59,7 +70,7 @@ public class RaceService {
         }
     }
 
-    private static List<Horse> startHorseRun(List<Horse> horses, List<Horse> results) throws InterruptedException {
+    private List<Horse> startHorseRun(List<Horse> horses, List<Horse> results) throws InterruptedException {
         ExecutorService executor = Executors.newCachedThreadPool();
         CountDownLatch latch = new CountDownLatch(horses.size());
         Runnable r = () -> {
@@ -90,20 +101,15 @@ public class RaceService {
         return results;
     }
 
-    public static List<RaceList> getRaceInfo(int id) {
+    public List<RaceList> getRaceInfo(int id) {
         return raceListDao.getAllByRaceId(id);
     }
 
-    public static Race getRaceById(int id) {
+    public Race getRaceById(int id) {
         return raceDao.findById(id).get();
     }
 
-    public static List<Horse> getAllHorses() {
-        return (List<Horse>) horseDao.findAll();
+    public ProfileInfo getProfileInfo() {
+        return new ProfileInfo(raceDao.count(), raceListDao.countByPositionAndChosenIsTrue(1));
     }
-
-    public static ProfileInfo getProfileInfo() {
-        return new ProfileInfo(raceDao.countAllById(), raceListDao.countAllByIdAndChosenIsTrue());
-    }
-
 }

@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class RaceList {
     public RaceList(int id, boolean isChosen, int position, Horse horse, Race race) {
         this.id = id;
-        this.isChosen = isChosen;
+        this.chosen = isChosen;
         this.position = position;
         this.horse = horse;
         this.race = race;
@@ -22,8 +22,7 @@ public class RaceList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    private boolean isChosen;
+    private boolean chosen;
     private int position;
 
     @ManyToOne()
